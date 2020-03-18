@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type="text/javascript">
+  $(function() {
+
+    var get_word_opt = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_get_options', {
+        word: $('input[name="word"]').val(),
+      }, function(data) {
+        $('#options').empty(); //clean previous results
+        $.each(data.option_list, function(k, v){
+        $("#options").append('<li>'+v+'</li>');
+        });
+        
+      });
+      return false;
+    };
+
+    
+    var add_word_to_text= function(word_val) {
+      //var word_val=data.selected_word
+      var complete_text=$('#complete_text').val();
+      $('#complete_text').val(complete_text+word_val);
+      $('#options').empty(); //clean previous results
+      $('input[name="word"]').val("");//clean previous results
+    }
+
+    var choose_word_opt = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_select_word', {
+        num: String.fromCharCode(e.which),
+      }, function(data) {
+        add_word_to_text(data.selected_word)
+      });
+      return false;
+    };
+
+
+    $('#candidate_word[type=text]').bind('keydown', function(e) {
+        if (e.keyCode == 13){
+          add_word_to_text($('input[name="word"]').val())
+        }else if (e.keyCode >= 48 && e.keyCode <= 57){ //if it is a number
+          choose_word_opt(e);
+        }else{
+          get_word_opt(e);
+        }
+    });
+
+    $('button#clear').bind('click', function(e) {
+      $('#complete_text').val("");
+    });
+
+
+
+  });
+</script>
+<h1>Thai writer</h1>
+<p style="font-size:20px">
+  <textarea id="complete_text" rows="5" cols="30" style="font-size:30px"></textarea>
+  <button id="clear">Clear</button>
+  <br>
+  <div>
+    <input id="candidate_word" type="text" size="20" name="word"> 
+    <br>
+    <span id="options"></span>
+  </div>
+{% endblock %}
