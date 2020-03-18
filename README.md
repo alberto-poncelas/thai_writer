@@ -1,7 +1,7 @@
 # Thai Writer
 
 
-Tool for helping writing Thai alphabet.
+Tool for helping to write Thai words.
 
 
 Execute: 
